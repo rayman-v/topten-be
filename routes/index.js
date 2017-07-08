@@ -2,7 +2,6 @@ var express = require('express');
 var router = express.Router();
 var request = require('request');
 var cheerio = require('cheerio');
-var iconv = require('iconv-lite');
 var bdresult = [];
 var wbresult = [];
 
@@ -11,8 +10,10 @@ router.get('/list', function(req, res, next) {
   var keyword = req.query.keyword;
   if (keyword === 'bdhotnews') {
     res.json(bdresult);
+    return;
   }else if (keyword === 'wbhotsearch'){
     res.json(wbresult);
+    return;
   }
   res.json([]);
 });
@@ -68,27 +69,29 @@ function getwb() {
 getbd();
 function getbd() {
   request({
-    url: 'http://top.baidu.com/news?fr=topindex',
+    url: 'http://top.baidu.com/mobile_v2/buzz/hotspot',
     encoding: null,
     headers: {
-      'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.65 Safari/537.36'
+      'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13B143 Safari/601.1'
     }
   }, function (err, response, body) {
     if (!err && response.statusCode == 200) {
-      $ = cheerio.load(iconv.decode(body, 'gb2312'), {decodeEntities: false});
       var result = [];
-      $('#new_list_div>.news_list').each(function (key, val) {
+      var originJson = JSON.parse(body);
+      for (var i = 0; i < 10; i++) {
+        var val = originJson.result.topwords[i];
         var obj = {};
-        var ele1 = $(val).find('.title_3 > .fl > h2 > a');
-        var ele2 = $(val).find('.news_tex');
-        obj['title'] = (key+1) + '. ' + ele1.text();
-        obj['href'] = ele1.attr('href');
-        obj['desc'] = ele2.text();
+        obj['title'] = (i+1) + '. ' + val.keyword;
+        obj['hot'] = val.searches;
         result.push(obj);
-        if (key > 8) {
-          return false;
-        }
-      });
+      }
+  
+      for (var j = 0; j < 10; j++) {
+        var val = originJson.result.descs[j];
+        var obj = result[j];
+        obj['href'] = val.content.data[0].originlink;
+        obj['desc'] = val.content.data[0].description;
+      }
       if (result.length !== 0) {
         bdresult = result;
       }
