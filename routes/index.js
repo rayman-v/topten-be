@@ -26,7 +26,7 @@ router.get('/entrance', function(req, res, next) {
   res.append('Access-Control-Allow-Origin', '*');
   var result = [
     {
-      name: '1百度热闻1',
+      name: '百度热闻',
       keyword: 'bdhotnews'
     }, {
       name: '微博热搜',
