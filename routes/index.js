@@ -72,13 +72,14 @@ function getwb() {
     }
     setTimeout(function () {
       getwb();
-    }, 1000 * 60 * 2);
+    }, (1000 * 60 * 2));
   });
 }
 getbl();
 function getbl() {
+  var t =
   request({
-    url: 'https://api.bilibili.com/x/web-interface/ranking?rid=0&day=1',
+    url: 'https://api.bilibili.com/x/web-interface/ranking?rid=0&day=1&t=' + new Date().getTime(),
     encoding: null,
     headers: {
       'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13B143 Safari/601.1'
@@ -104,14 +105,14 @@ function getbl() {
     }
     setTimeout(function () {
       getwb();
-    }, 1000 * 60 * 2);
+    }, (1000 * 60 * 2));
   });
 }
 
 getbd();
 function getbd() {
   request({
-    url: 'http://top.baidu.com/mobile_v2/buzz/hotspot',
+    url: 'http://top.baidu.com/mobile_v2/buzz/hotspot?t=' + new Date().getTime(),
     encoding: null,
     headers: {
       'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13B143 Safari/601.1'
@@ -141,7 +142,7 @@ function getbd() {
     }
     setTimeout(function () {
       getbd();
-    }, 1000 * 60 * 2);
+    }, (1000 * 60 * 2));
   });
 }
 
